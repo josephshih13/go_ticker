@@ -27,29 +27,14 @@ func main() {
 
 	randstr := RandomString(20)
 
-	// 	go func() {
-	// 		for {
-	// 			select {
-	// 			case <-done:
-	// 				return
-	// 			case t := <-ticker.C:
-	// 				fmt.Println("Tick at", t, randstr)
-	// 			}
-	// 		}
-	// 	}()
-
 	for {
 		select {
 		case <-done:
 			return
 		case t := <-ticker.C:
-			// 			fmt.Println("Tick at", t, randstr)
 			fmt.Println(t, ": ", randstr)
 		}
 	}
 
 	time.Sleep(16 * time.Second)
-	// ticker.Stop()
-	// done <- true
-	// fmt.Println("Ticker stopped")
 }
