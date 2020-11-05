@@ -12,6 +12,17 @@ spec:
       labels:
         app: mainapp
     spec:
+      volumes: # Define volume
+        - name: shared-image
+          emptyDir: {}
       containers:
-        - name: mainapp
+        - name: mainapp-tick
           image: josephshih13/tick
+          volumeMounts: # Mount volume
+          - name: shared-image
+            mountPath: /home/ec2-user/environment
+        - name: mainapp-backend
+          image: josephshih13/mainapp2
+          volumeMounts: # Mount volume
+          - name: shared-image
+            mountPath: /home/ec2-user/environment
