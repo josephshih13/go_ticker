@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: image-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,3 +39,29 @@ spec:
           volumeMounts: # Mount volume
           - name: shared-image
             mountPath: /home/ec2-user/environment
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mainapp-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: mainapp-svc
+          servicePort: 4567
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mainapp-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: mainapp
+  ports:
+    - port: 4567
+      protocol: TCP
+      targetPort: 9936

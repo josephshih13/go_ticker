@@ -29,9 +29,9 @@ func RandomString(n int) string {
 }
 
 func writeshowme(str string){
-	println(str)
+	// println(str)
 	d1 := []byte(str)
-	println(d1)
+	// println(d1)
     err := ioutil.WriteFile("/home/ec2-user/environment/showme.txt", d1, 0644)
     check(err)
 }
@@ -50,7 +50,7 @@ func main() {
 			case <-done:
 				return
 			case t := <-ticker.C:
-				str := t.Format("2006-01-02 15:04:05") + " : " + randstr
+				str := t.Format("2006-01-02 15:04:05") + " : " + randstr + "\n"
 				writeshowme(str)
 			}
 	}
