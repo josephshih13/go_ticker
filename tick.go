@@ -1,19 +1,22 @@
 package main
 
 import (
-	"math/rand"
-	"time"
+	"fmt"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"io/ioutil"
+	"math/rand"
+	"net/http"
+	"time"
 )
 
 var letter = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+var outputstr string
 
-
-	
 func check(e error) {
-    if e != nil {
-        panic(e)
-    }
+	if e != nil {
+		panic(e)
+	}
 }
 
 func init() {
@@ -28,14 +31,15 @@ func RandomString(n int) string {
 	return string(b)
 }
 
-func writeshowme(str string){
-	// println(str)
-	d1 := []byte(str)
-	// println(d1)
-    err := ioutil.WriteFile("/home/ec2-user/environment/showme.txt", d1, 0644)
-    check(err)
+func getpong() string {
+	resp, err := http.Get("http://ping-pong-svc:6789/")
+	check(err)
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	check(err)
+	// print(body)
+	return string(body)
 }
-
 
 func main() {
 
@@ -44,15 +48,31 @@ func main() {
 
 	randstr := RandomString(20)
 
-
-	for {
+	go func() {
+		for {
 			select {
 			case <-done:
 				return
 			case t := <-ticker.C:
 				str := t.Format("2006-01-02 15:04:05") + " : " + randstr + "\n"
-				writeshowme(str)
+				outputstr = str
 			}
-	}
+		}
+	}()
+
+	e := echo.New()
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// Route => handler
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, outputstr+getpong())
+	})
+
+	// Start server
+	fmt.Println("Start Server from port 9936")
+	e.Logger.Fatal(e.Start(":9936"))
 
 }
