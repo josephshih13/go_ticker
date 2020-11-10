@@ -73,7 +73,7 @@ func main() {
 
 	// Route => handler
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, outputstr+getpong())
+		return c.String(http.StatusOK, get_message()+outputstr+getpong())
 	})
 
 	// Start server
