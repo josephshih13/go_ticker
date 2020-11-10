@@ -32,7 +32,7 @@ func RandomString(n int) string {
 }
 
 func getpong() string {
-	resp, err := http.Get("http://ping-pong-svc:6789/internal")
+	resp, err := http.Get("http://ping-pong-svc.ping-pong:6789/internal")
 	check(err)
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
