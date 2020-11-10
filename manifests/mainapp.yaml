@@ -3,6 +3,14 @@ kind: Namespace
 metadata:
   name: mainapp
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: mainapp
+  name: dotenv
+data:
+  MESSAGE: "Hello world"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,6 +29,12 @@ spec:
       containers:
         - name: mainapp-tick
           image: josephshih13/tick
+          env:
+          - name: MESSAGE
+            valueFrom:
+              configMapKeyRef:
+                name: dotenv
+                key: MESSAGE
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

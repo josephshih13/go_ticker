@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -29,6 +30,10 @@ func RandomString(n int) string {
 		b[i] = letter[rand.Intn(len(letter))]
 	}
 	return string(b)
+}
+
+func get_message() string {
+	return os.Getenv("MESSAGE")
 }
 
 func getpong() string {
